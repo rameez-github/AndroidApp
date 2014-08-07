@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidApp</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="menu">
+        <item>Home</item>
+        <item>Chats</item>	
+        <item>Contacts</item>
+        <item>Shake To Make</item>
+        <item>Settings</item>		
+    </string-array>
+    
+    
+    <string-array name="countries">
+        <item>Australia</item>
+        <item>Newzeland</item>	
+        <item>England</item>
+        <item>Canada</item>
+        <item>Germany</item>		
+    </string-array>
+</resources>

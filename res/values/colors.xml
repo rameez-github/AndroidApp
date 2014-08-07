@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="bg_color_left">#303030</color>
+    <color name="bg_color_right">#E2E2E4</color>
+    <color name="bg_color_left_dark">#222222</color>
+    <color name="red_color">#DB4937</color>
+    <color name="green_color">#5ECE27</color>
+    <color name="blue_color">#3B84C0</color>
+    
+    <color name="purple_bg">#D5D1EF</color>
+    <color name="purple_app">#8B75B9</color>
+    <color name="white_app">#FFFFFF</color>
+    <color name="pink_app">#FF69B4</color>
+    <color name="text_gray">#BAB2B1</color>
+    <color name="middle_transparent">#20000000</color>
+</resources>
