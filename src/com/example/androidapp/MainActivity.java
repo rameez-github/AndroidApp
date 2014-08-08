@@ -70,6 +70,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			changeFragment (new Screen1());
 			mLayout.closePane();
 			break;
+		case 1:
+			changeFragment (new FragmentChats());
+			mLayout.closePane();
+			break;
 		case 3:
 			changeFragment (new Screen2());
 			mLayout.closePane();

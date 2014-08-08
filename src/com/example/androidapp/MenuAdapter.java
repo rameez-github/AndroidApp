@@ -43,7 +43,7 @@ public class MenuAdapter extends BaseAdapter{
 		// TODO Auto-generated method stub
 		final ViewHolder holder;
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.menu_list_item, null);
+			convertView = mInflater.inflate(R.layout.adapter_menu_list_item, null);
 			holder = new ViewHolder();
 			holder.mIcon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.menu_lable = (TextView) convertView.findViewById(R.id.menu_lable);
