@@ -26,7 +26,7 @@ public class SettingsAdapter extends BaseAdapter {
 	private static final int		CT_HEADER	 = 1;
 	private static final int		CT_TEXT_1	 = 2;
 	private static final int		CT_TEXT_2	 = 3;
-	private static final int		CT_TEXT_SW	 = 3;
+	private static final int		CT_TEXT_SW	 = 4;
 
 	public SettingsAdapter(Context context, SafeJSONArray mArray) {
 		this.mContext 	= context;
@@ -56,11 +56,12 @@ public class SettingsAdapter extends BaseAdapter {
         }else if (mType.equals(Const.TYPE_TEXT_2)){
 	    	return CT_TEXT_2;
 	    
-        }else {
+        }else if (mType.equals(Const.TYPE_TEXT_SWITCH)){
     	    return CT_TEXT_SW;
     	    
         }
 	    
+	    return CT_TEXT_1;
     }
 	
     @Override
@@ -83,7 +84,9 @@ public class SettingsAdapter extends BaseAdapter {
 		private TextView			mHeaderText;
 		private TextView			mTextView1;
 		private TextView			mTextView2;
+		@SuppressWarnings("unused")
 		private ImageView 			mEditProfile;
+		@SuppressWarnings("unused")
 		private ImageView 			mProfile;
 		private Switch				mSwitch;
 		
@@ -94,7 +97,7 @@ public class SettingsAdapter extends BaseAdapter {
 			
 			mTextView1		= (TextView) view.findViewById(R.id.textView1);
 			mTextView2		= (TextView) view.findViewById(R.id.textView2);
-			mTextView2		= (TextView) view.findViewById(R.id.heading1);
+			mHeaderText		= (TextView) view.findViewById(R.id.heading1);
 			
 			mSwitch			= (Switch) view.findViewById(R.id.switch1);
 						
@@ -105,14 +108,22 @@ public class SettingsAdapter extends BaseAdapter {
 			String mType = itemObject.getString("item_type");
 			
 			if (mType.equals(Const.TYPE_PROFILE)) {
+				mTextView1.setText(itemObject.getString("user_name"));
+				mTextView2.setText(itemObject.getString("status"));
 				
 			}else if (mType.equals(Const.TYPE_HEADER)) {
+				mHeaderText.setText(itemObject.getString("header"));
 				
 			}else if (mType.equals(Const.TYPE_TEXT_1)) {
+				mTextView1.setText(itemObject.getString("text"));
 				
 			}else if (mType.equals(Const.TYPE_TEXT_2)) {
+				mTextView1.setText(itemObject.getString("text_1"));
+				mTextView2.setText(itemObject.getString("text_2"));
 				
 			}else if (mType.equals(Const.TYPE_TEXT_SWITCH)) {
+				mTextView1.setText(itemObject.getString("text"));
+				mSwitch.setChecked(itemObject.getBoolean("switch"));
 				
 			}
 

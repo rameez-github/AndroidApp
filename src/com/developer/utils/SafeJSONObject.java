@@ -68,7 +68,16 @@ public class SafeJSONObject  {
 		
 		return null;
 	}
-	
+
+	public void putBoolean(String key, boolean value) {
+		try {
+			mObject.put(key, value);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void putString(String key, String value) {
 		try {
 			mObject.put(key, value);

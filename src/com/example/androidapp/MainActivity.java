@@ -1,6 +1,8 @@
 package com.example.androidapp;
 
 
+import com.developer.adapter.MenuAdapter;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,16 +10,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener, 
 	OnItemClickListener{
 
+	@SuppressWarnings("unused")
 	private Fragment childFragment;
-	private MainActivity mActivity;
 	private ListView menu_list_view;
 	private ImprovedSlidingPaneLayout mLayout;
 	
@@ -36,10 +36,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		menu_list_view.setAdapter(adapter);
 		menu_list_view.setOnItemClickListener(this);
 		
-		// set listener for refresh and three bar buttons/icons... 
 		//findViewById(R.id.refresh_button).setOnClickListener(this);
 		findViewById(R.id.menu_button).setOnClickListener(this);
-		
 
 		getSupportFragmentManager().beginTransaction()
         .replace(R.id.fragment_home, childFragment = new Screen1()).commitAllowingStateLoss();
