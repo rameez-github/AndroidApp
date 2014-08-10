@@ -1,13 +1,13 @@
 package com.developer.model;
 
+import android.text.Spanned;
+
 /**
  * Message is a Custom Object to encapsulate message information/fields
  *
  */
 public class Message {
-	
-	String message;
-	
+	Spanned spanMsg;
 	/**
 	 * Time of the message when message is received or sent
 	 */
@@ -22,28 +22,23 @@ public class Message {
 	 * image resource id
 	 */
 	int imgRes;
-	
-	public Message(String message, String time, boolean isMine) {
+
+	public Message(Spanned spanned, String time, boolean isMine) {
 		super();
-		this.message = message;
+		this.spanMsg = spanned;
 		this.time	 = time;
 		this.isMine = isMine;
 	}
 	
-	public Message(String message, String time, int imgRes, boolean isMine) {
-		super();
-		this.message	= message;
-		this.time	 	= time;
+	public Message(Spanned spanned, String time, int imgRes, boolean isMine) {
+		this.spanMsg	= spanned;
+		this.time 		= time;
 		this.imgRes		= imgRes; 
 		this.isMine 	= isMine;
 	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public void setMessage(String message) {
-		this.message = message;
+
+	public Spanned getSpanMessage() {
+		return spanMsg;
 	}
 	
 	public boolean isMine() {

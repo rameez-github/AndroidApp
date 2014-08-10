@@ -101,7 +101,8 @@ public class MessageAdapter extends BaseAdapter{
 			if (message.isMine()){} 
 			else {imgv.setImageResource(message.getImageResourceId());}
 			
-			this.message.setText(message.getMessage());
+
+			this.message.setText(message.getSpanMessage());
 			this.time.setText(message.getTimeOfMessage());
 		}
 			
