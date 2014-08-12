@@ -12,7 +12,7 @@
 		android:scaleType="fitXY"
 		android:layout_marginRight="5dp"
     	android:layout_alignParentLeft="true"
-	    android:src="@drawable/profile_pic" />
+	    android:src="@drawable/ic_launcher" />
     
     <RelativeLayout android:layout_width="match_parent"
     	android:layout_height="wrap_content" >

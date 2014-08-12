@@ -27,12 +27,12 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.Html.ImageGetter;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -45,7 +45,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.PopupWindow.OnDismissListener;
-import android.widget.Toast;
 
 public class FragmentChatDetails extends Fragment implements KeyClickListener {
 	
@@ -288,14 +287,19 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 			
 			@Override
 			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (popupWindow.isShowing()) popupWindow.dismiss();
+			}
+		});
+		
 
-				Toast.makeText(getActivity(), "edittext clicked", Toast.LENGTH_LONG).show();
-				if (popupWindow.isShowing()) {
-					
-					popupWindow.dismiss();
-					
-				}
-				
+		text.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if (hasFocus) 
+					if (popupWindow.isShowing()) popupWindow.dismiss();
 			}
 		});
 
@@ -304,13 +308,12 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
 				if(text.getText().toString().length() > 0)
 				{
-					text.setText("");
 					//addNewMessage(new Message(getSmiledText(getActivity(),newMessage), "--:-- AM", true, true));
-					Log.v("text", "--- "+text.getText().toString());
+					//Log.v("text", "--- "+text.getText().toString());
 					addNewMessage(new Message(text.getText(), "--:-- AM", true));
+					text.setText("");
 					//new SendMessage().execute();
 				}
 			}

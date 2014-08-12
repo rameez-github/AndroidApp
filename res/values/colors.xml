@@ -4,6 +4,7 @@
     <color name="bg_color_left">#303030</color>
     <color name="bg_color_right">#E2E2E4</color>
     <color name="bg_color_left_dark">#222222</color>
+    <color name="bg_gray">#F5F5F5</color>
     <color name="red_color">#DB4937</color>
     <color name="green_color">#5ECE27</color>
     <color name="blue_color">#3B84C0</color>

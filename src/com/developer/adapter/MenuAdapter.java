@@ -2,10 +2,6 @@ package com.developer.adapter;
 
 
 import com.example.androidapp.R;
-import com.example.androidapp.R.array;
-import com.example.androidapp.R.drawable;
-import com.example.androidapp.R.id;
-import com.example.androidapp.R.layout;
 
 import android.content.Context;
 import android.view.LayoutInflater;
