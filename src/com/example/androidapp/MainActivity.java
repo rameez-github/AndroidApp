@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		findViewById(R.id.menu_button).setOnClickListener(this);
 
 		getSupportFragmentManager().beginTransaction()
-        .replace(R.id.fragment_home, childFragment = new Screen1()).commitAllowingStateLoss();
+        .replace(R.id.fragment_home, childFragment = new FragmentHome()).commitAllowingStateLoss();
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		
 		switch (position){
 		case 0:
-			changeFragment (new Screen1());
+			changeFragment (new FragmentHome());
 			mLayout.closePane();
 			break;
 		case 1:
@@ -83,7 +83,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			mLayout.closePane();
 			break;
 		case 3:
-			changeFragment (new Screen2());
+			changeFragment (new FragmentShakeToMake());
 			mLayout.closePane();
 			break;
 		case 4:
