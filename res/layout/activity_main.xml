@@ -149,6 +149,16 @@
             </LinearLayout> -->
             
             <ImageView
+		        android:id="@+id/map_button"
+		    	android:layout_width="35dp"
+		    	android:layout_height="35dp"
+		    	android:layout_centerVertical="true"
+		    	android:layout_toLeftOf="@+id/refresh_button"
+		    	android:layout_marginRight="5dp"
+		    	android:src="@drawable/pin"
+		    	android:contentDescription="@string/app_name" />
+            
+            <ImageView
 		        android:id="@+id/refresh_button"
 		    	android:layout_width="35dp"
 		    	android:layout_height="35dp"
