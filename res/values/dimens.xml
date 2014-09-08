@@ -6,4 +6,9 @@
 	
 	<dimen name="keyboard_height">230dip</dimen>
 	
+	<!-- Gallery Photo Size Used in pakage "com.developer.album" -->
+    <dimen name="photo_width">110dp</dimen>
+    <dimen name="photo_height">110dp</dimen>
+    
+    <dimen name="album_pic_height">150dp</dimen>
 </resources>

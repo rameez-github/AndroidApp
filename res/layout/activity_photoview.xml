@@ -1,0 +1,37 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/android" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/framelayout_container"
+        android:background="#000" >
+
+        <android.support.v4.view.ViewPager
+		    android:id="@+id/pager"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" />
+        
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="98px"
+            android:layout_gravity="bottom"
+            android:tag="fw-sh-gb"
+            android:id="@+id/framelayout_control_panel"
+            >
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/bg_color_left"
+                android:alpha="0.6" />
+            <ImageButton
+                android:layout_width="120px"
+                android:layout_height="100px"
+                android:background="@drawable/ic_action_discard"
+                android:id="@+id/imagebutton_remove"
+                android:tag="sw-sh-gr"
+                android:layout_gravity="right" />
+        </FrameLayout>
+    </FrameLayout>
+
+</merge>

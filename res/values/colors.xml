@@ -12,6 +12,7 @@
     <color name="text_gray">#BAB2B1</color>
     <color name="purple_transparent">#616F8C</color>
     <color name="middle_transparent">#20000000</color>
+    <color name="bg_light_blue">#EBF5FF</color>
     
     
     <!-- colors for chat bubbles -->

@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.developer.adapter.MenuAdapter;
 import com.developer.adapter.MyInfoWindowAdapter;
+import com.developer.album.ActivityAlbumList;
 import com.developer.model.EventInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -57,6 +59,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		
 		findViewById(R.id.map_button).setOnClickListener(this);
 		findViewById(R.id.menu_button).setOnClickListener(this);
+		findViewById(R.id.album_button).setOnClickListener(this);
 
 		getSupportFragmentManager().beginTransaction()
         .replace(R.id.fragment_home, childFragment = new FragmentHome()).commitAllowingStateLoss();
@@ -71,6 +74,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		}
 		else if (v.getId() == R.id.map_button){
 			setUpEventSpots ();
+		}
+		else if (v.getId() == R.id.album_button){
+			startActivity(new Intent (this, ActivityAlbumList.class));
 		}
 	}
 	
@@ -158,6 +164,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 	@Override
 	public void onItemClick(AdapterView<?> a, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
+
+		findViewById(R.id.map_button).setVisibility(View.VISIBLE);
+		findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
+		findViewById(R.id.album_button).setVisibility(View.GONE);
+		
 		
 		if (isPanelClosed) // do nothing
 			return;
@@ -168,6 +179,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			mLayout.closePane();
 			break;
 		case 1:
+			findViewById(R.id.map_button).setVisibility(View.GONE);
+			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.album_button).setVisibility(View.VISIBLE);
 			changeFragment (new FragmentChats());
 			mLayout.closePane();
 			break;
