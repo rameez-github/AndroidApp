@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -57,7 +56,7 @@ public class ActivityAlbumList extends Activity implements OnItemClickListener{
 		listview.setOnItemClickListener(this);
 		
 		SafeJSONArray list = DataKeeper.sharedInstance().getAlbums(this);
-		Log.v("log album", "--- "+list.toString());
+		//Log.v("log album", "--- "+list.toString());
 		mAdapterAlbumList = new AdapterAlbumList(this, imageLoader, list);
 		listview.setAdapter(mAdapterAlbumList);
 		btnGalleryPickMul = (Button) findViewById(R.id.btn_create_album);
@@ -66,7 +65,7 @@ public class ActivityAlbumList extends Activity implements OnItemClickListener{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(Action.ACTION_MULTIPLE_PICK);
-				startActivityForResult(i, 200);
+				startActivityForResult(i, 100);
 			}
 		});
 	}
@@ -75,18 +74,28 @@ public class ActivityAlbumList extends Activity implements OnItemClickListener{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
+		if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
 
 			String[] all_path = data.getStringArrayExtra("all_path");
 			Intent i = new Intent(ActivityAlbumList.this, ActivityCreateAlbum.class);
 			i.putExtra("all_path", all_path);
-			startActivityForResult(i, 100);
+			startActivityForResult(i, 200);
 		}
-		else if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
-			//Toast.makeText(this, "CHEERS", Toast.LENGTH_LONG).show();
-
+		else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
+			
 			SafeJSONArray list = DataKeeper.sharedInstance().getAlbums(this);
-			Log.v("log album", "--- "+list.toString());
+			//Log.v("log album", "--- "+list.toString());
+			mAdapterAlbumList.addAll(list);
+			
+			// result pass for FragmentChatDetails class
+			Intent intent = new Intent ();
+			intent.putExtra("has_new_album_created", true);
+			setResult(RESULT_OK, intent);
+		}
+		else if (requestCode == 300 && resultCode == Activity.RESULT_OK) {
+			
+			SafeJSONArray list = DataKeeper.sharedInstance().getAlbums(this);
+			//Log.v("log album", "--- "+list.toString());
 			mAdapterAlbumList.addAll(list);
 		}
 	}
@@ -96,6 +105,6 @@ public class ActivityAlbumList extends Activity implements OnItemClickListener{
 		// TODO Auto-generated method stub
 		Intent i = new Intent(ActivityAlbumList.this, ActivityAlbumDetail.class);
 		i.putExtra("index_of_album", position);
-		startActivityForResult(i , 100);
+		startActivityForResult(i , 300);
 	}
 }

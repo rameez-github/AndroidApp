@@ -23,6 +23,19 @@ public class Message {
 	 */
 	int imgRes;
 
+	/**
+	 * boolean to determine, does message has album or not. 
+	 */
+	boolean hasAlbum;
+	
+	Album album;
+	
+	public Message (Album mAlbum, boolean isMine){
+		this.album = mAlbum;
+		this.hasAlbum = true;
+		this.isMine = isMine;
+	}
+	
 	public Message(Spanned spanned, String time, boolean isMine) {
 		super();
 		this.spanMsg = spanned;
@@ -61,4 +74,11 @@ public class Message {
 		return imgRes;
 	}
 	
+	public boolean hasAlbum (){
+		return hasAlbum;
+	}
+	
+	public Album getAlbum (){
+		return album;
+	}
 }

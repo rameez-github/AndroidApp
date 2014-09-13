@@ -9,9 +9,22 @@ import java.util.Map.Entry;
 import com.developer.adapter.EmoticonsGridAdapter.KeyClickListener;
 import com.developer.adapter.EmoticonsPagerAdapter;
 import com.developer.adapter.MessageAdapter;
+import com.developer.album.ActivityAlbumDetail;
+import com.developer.album.ActivityAlbumList;
+import com.developer.model.Album;
 import com.developer.model.Message;
+import com.developer.utils.DataKeeper;
+import com.developer.utils.SafeJSONArray;
+import com.developer.utils.SafeJSONObject;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +51,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -45,6 +60,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.PopupWindow.OnDismissListener;
+import android.widget.Toast;
 
 public class FragmentChatDetails extends Fragment implements KeyClickListener {
 	
@@ -66,7 +82,29 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 	private Bitmap[] emoticons;
 	private int keyboardHeight;
 	private View popUpView;
-	
+	private ImageLoader imageLoader;
+	private MainActivity fromMainActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
+		this.fromMainActivity = (MainActivity) activity;
+		fromMainActivity.changeTopBarIcons(getClass());
+		fromMainActivity.findViewById(R.id.album_button).setOnClickListener(new OnClickListener (){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				startActivityForResult(
+						new Intent (getActivity(), ActivityAlbumList.class),
+						100
+						);
+			}
+			
+		});
+	}
+
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -80,6 +118,8 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		text = (EditText) view.findViewById(R.id.text);
 		send = (Button) view.findViewById(R.id.btn_send);
 		
+		initImageLoader ();
+		
 		messages = new ArrayList<Message>();
 
 		readEmoticons();
@@ -91,10 +131,13 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		messages.add(new Message(getSmileyText("oh thats great. how are you showing them", "24.png"), "2:50 PM", R.drawable.pic7, false));
 		
 
-		adapter = new MessageAdapter(getActivity(), messages);
+		adapter = new MessageAdapter(getActivity(), messages, imageLoader);
 		setListAdapter(view, adapter);
 		addNewMessage(new Message(Html.fromHtml("mmm, well, using 9 patches png to show them.", null, null), "2:59 PM", true));
 		
+		Album album = getNewAlbumCreated();
+		if (album != null)
+			addNewMessage(new Message(getNewAlbumCreated(), false));
 
 		//-------------EMOTICONS CODE--------------  
 		parentLayout = (LinearLayout) view.findViewById(R.id.list_parent);
@@ -141,7 +184,51 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		return view;
 	}
 	
+	private Album getNewAlbumCreated (){
+		SafeJSONArray album_array = DataKeeper.sharedInstance().getAlbums(getActivity());
+		
+		// get most recent album created
+		SafeJSONObject album_item = album_array.getJSONObject(album_array.length() - 1);
 
+		// assign message album
+		if (album_array != null && album_array.length() > 0){
+			if (album_item != null){
+				Album album = new Album ();
+				album.album_index = album_array.length() - 1;
+				album.album_title = album_item.getString("album_title");
+				album.pic_path = album_item.getJSONArray("all_path").getString(0);
+				album.total_album_pics = album_item.getString("total_album_pics");
+				return album;
+			}
+		}
+		return null;
+	}
+	
+	private void initImageLoader() {
+		@SuppressWarnings("deprecation")
+		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+				.cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+		ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(
+				getActivity()).defaultDisplayImageOptions(defaultOptions).memoryCache(
+				new WeakMemoryCache());
+
+		ImageLoaderConfiguration config = builder.build();
+		imageLoader = ImageLoader.getInstance();
+		imageLoader.init(config);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+			Album album = getNewAlbumCreated();
+			if (album != null)
+				addNewMessage(new Message(getNewAlbumCreated(), true));
+		}
+	}
+	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (popupWindow.isShowing()) {
 			popupWindow.dismiss();
@@ -324,7 +411,21 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		// TODO Auto-generated method stub
 		chatList = (ListView) view.findViewById(R.id.list);
 		chatList.setAdapter(adapter2);
-		
+		chatList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				if (messages.get(position).hasAlbum()){
+					Intent i = new Intent(getActivity(), ActivityAlbumDetail.class);
+					i.putExtra("start_from_class", getClass());
+					i.putExtra("index_of_album", messages.get(position).getAlbum().album_index);
+					startActivity(i);
+				}
+					
+			}
+		});
 
 		//-------------EMOTICONS CODE--------------  
 		chatList.setOnTouchListener(new OnTouchListener() {

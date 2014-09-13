@@ -59,7 +59,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		
 		findViewById(R.id.map_button).setOnClickListener(this);
 		findViewById(R.id.menu_button).setOnClickListener(this);
-		findViewById(R.id.album_button).setOnClickListener(this);
 
 		getSupportFragmentManager().beginTransaction()
         .replace(R.id.fragment_home, childFragment = new FragmentHome()).commitAllowingStateLoss();
@@ -74,9 +73,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		}
 		else if (v.getId() == R.id.map_button){
 			setUpEventSpots ();
-		}
-		else if (v.getId() == R.id.album_button){
-			startActivity(new Intent (this, ActivityAlbumList.class));
 		}
 	}
 	
@@ -164,11 +160,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 	@Override
 	public void onItemClick(AdapterView<?> a, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
-
-		findViewById(R.id.map_button).setVisibility(View.VISIBLE);
-		findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
-		findViewById(R.id.album_button).setVisibility(View.GONE);
-		
 		
 		if (isPanelClosed) // do nothing
 			return;
@@ -179,9 +170,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			mLayout.closePane();
 			break;
 		case 1:
-			findViewById(R.id.map_button).setVisibility(View.GONE);
-			findViewById(R.id.refresh_button).setVisibility(View.GONE);
-			findViewById(R.id.album_button).setVisibility(View.VISIBLE);
 			changeFragment (new FragmentChats());
 			mLayout.closePane();
 			break;
@@ -200,6 +188,24 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		}
 	}
 
+	public void changeTopBarIcons (Class<?> class1){
+		if (class1 == FragmentChatDetails.class){
+			findViewById(R.id.map_button).setVisibility(View.GONE);
+			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.album_button).setVisibility(View.VISIBLE);
+		}
+		else if (class1 == FragmentChats.class){
+			findViewById(R.id.map_button).setVisibility(View.GONE);
+			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.album_button).setVisibility(View.GONE);
+		}
+		else {
+			findViewById(R.id.map_button).setVisibility(View.VISIBLE);
+			findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
+			findViewById(R.id.album_button).setVisibility(View.GONE);
+		}
+	}
+	
 	@Override
 	public void onPanelClosed(View arg0) {
 		// TODO Auto-generated method stub

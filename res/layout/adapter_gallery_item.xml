@@ -14,13 +14,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
-            <ImageView
+            <!-- <ImageView
                 android:id="@+id/imgQueue"
                 android:layout_width="@dimen/photo_width"
                 android:layout_height="@dimen/photo_height"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
-                android:src="@drawable/no_media" />
+                android:src="@drawable/no_media" /> -->
+            <ImageView
+                android:id="@+id/imgQueue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/no_media" />    
         </FrameLayout>
 
         <ImageView

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.developer.adapter.ChatAdapter;
 import com.developer.model.ChatModel;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +19,15 @@ import android.widget.ListView;
 public class FragmentChats extends Fragment implements OnItemClickListener{
 	
 	ArrayList<ChatModel> list;
+	private MainActivity fromMainActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
+		this.fromMainActivity = (MainActivity) activity;
+		fromMainActivity.changeTopBarIcons(getClass());
+	}
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

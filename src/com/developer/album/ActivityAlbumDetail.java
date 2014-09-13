@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -165,7 +164,18 @@ public class ActivityAlbumDetail extends Activity{
 		for (int i=0; i<all_path.length(); i++) {
 			CustomGallery item = new CustomGallery();
 			item.sdcardPath = all_path.getString(i);
-			Log.v("sdcardPath", "////---"+item.sdcardPath);
+			//Log.v("sdcardPath", "////---"+item.sdcardPath);
+			dataT.add(item);
+		}
+		adapter.addAll(dataT);
+	}
+
+	private void configure (String[] all_path){
+		
+		for (String string : all_path) {
+			CustomGallery item = new CustomGallery();
+			item.sdcardPath = string;
+			//Log.v("sdcardPath", "////---"+string);
 			dataT.add(item);
 		}
 		adapter.addAll(dataT);
@@ -177,13 +187,10 @@ public class ActivityAlbumDetail extends Activity{
 
 		if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
 			setResult(RESULT_OK);
-			String single_path = data.getStringExtra("single_path");
+			String[] all_path = data.getStringArrayExtra("all_path");
 
 			// update adapter
-			CustomGallery item = new CustomGallery();
-			item.sdcardPath = single_path;
-			Log.v("sdcardPath", "////---"+item.sdcardPath);
-			dataT.add(item);
+			configure (all_path);
 			
 			// update textview
 			TextView total_pics = (TextView) findViewById(R.id.album_total_pics);
@@ -193,8 +200,10 @@ public class ActivityAlbumDetail extends Activity{
 			DataKeeper dataKeeper = DataKeeper.sharedInstance();
 			SafeJSONArray album_json_array = dataKeeper.getAlbums(this);
 			
-			album_json_array.getJSONObject(index_of_album)
-			.getJSONArray("all_path").put(single_path);// put path of pic
+			// put path of pic
+			SafeJSONArray all_path_array = album_json_array.getJSONObject(index_of_album).getJSONArray("all_path");
+			for (int i=0; i<all_path.length; i++)
+				all_path_array.put(all_path[i]);
 
 			album_json_array.getJSONObject(index_of_album)
 			.putInt("total_album_pics", dataT.size());// put total of pics
@@ -204,6 +213,10 @@ public class ActivityAlbumDetail extends Activity{
 		}
 		else if (requestCode == 300 && resultCode == Activity.RESULT_OK){
 			configure();
+			// update textview
+			TextView total_pics = (TextView) findViewById(R.id.album_total_pics);
+			total_pics.setText(""+dataT.size());
+						
 			setResult(RESULT_OK);
 		}
 	}

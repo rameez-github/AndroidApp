@@ -43,7 +43,7 @@
 			        android:layout_height="match_parent"
 			        android:layout_weight="1"
 		        	android:layout_marginRight="2dp"
-			        android:scaleType="fitXY"
+			        android:scaleType="centerCrop"
 			        android:src="@drawable/no_media" />
 		        
 		        <ImageView
@@ -52,7 +52,7 @@
 			        android:layout_height="match_parent"
 			        android:layout_weight="1"
 		        	android:layout_marginLeft="2dp"
-			        android:scaleType="fitXY"
+			        android:scaleType="centerCrop"
 			        android:src="@drawable/no_media" />
 		    </LinearLayout>
 		    
@@ -68,7 +68,7 @@
 			        android:layout_height="match_parent"
 			        android:layout_weight="1"
 		        	android:layout_marginRight="2dp"
-			        android:scaleType="fitXY"
+			        android:scaleType="centerCrop"
 			        android:src="@drawable/no_media" />
 		        
 		        <ImageView
@@ -77,7 +77,7 @@
 			        android:layout_height="match_parent"
 			        android:layout_weight="1"
 		        	android:layout_marginLeft="2dp"
-			        android:scaleType="fitXY"
+			        android:scaleType="centerCrop"
 			        android:src="@drawable/no_media" />
 		    </LinearLayout>
 		        

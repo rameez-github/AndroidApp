@@ -199,8 +199,12 @@ public class ActivityPhotoView extends Activity {
 					SafeJSONObject album_item = album_json_array.getJSONObject(index_of_album);
 					SafeJSONArray all_path = album_item.getJSONArray("all_path");
 					JSONArray new_all_path = all_path.remove(mViewPager.getCurrentItem(), all_path);
-					album_item.putSafeJSONArray("all_path", new_all_path);
 					
+					//update values
+					album_item.putSafeJSONArray("all_path", new_all_path);
+					album_item.putInt("total_album_pics", new_all_path.length());
+					
+					// save and finish
 					dataKeeper.saveAlbums(ActivityPhotoView.this, album_json_array.toString());
 					setResult(RESULT_OK);
 					finish();

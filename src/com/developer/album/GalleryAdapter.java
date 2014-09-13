@@ -3,6 +3,7 @@ package com.developer.album;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +16,59 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class GalleryAdapter extends BaseAdapter {
 
-	@SuppressWarnings("unused")
 	private Context mContext;
 	private LayoutInflater infalter;
 	private ArrayList<CustomGallery> data = new ArrayList<CustomGallery>();
 	ImageLoader imageLoader;
 
 	private boolean isActionMultiplePick;
+	private int album_pic_height;
 
 	public GalleryAdapter(Context c, ImageLoader imageLoader) {
 		infalter = (LayoutInflater) c
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mContext = c;
 		this.imageLoader = imageLoader;
+		album_pic_height = (int) mContext.getResources().getDimension(R.dimen.photo_height);
 		// clearCache();
 	}
+	
+	private Bitmap keepAspectHeight (Bitmap source, int required_height){
+		float scale;
+	    int newSize;
+	    
+	    Bitmap scaleBitmap = null;
+		scale = (float) required_height / source.getHeight();
+	        newSize = Math.round(source.getWidth() * scale);
+	        scaleBitmap = Bitmap.createScaledBitmap(source, newSize, required_height, true);
+	    
+	    /*if (scaleBitmap != source) {
+	           source.recycle();
+	    }*/
+		return scaleBitmap;
+	}
+	/*
+	public Bitmap transform(Bitmap source) {
+	    float scale;
+	    int newSize;
+	    Bitmap scaleBitmap;
+	    if (isHeightScale) {
+	        scale = (float) mSize / source.getHeight();
+	        newSize = Math.round(source.getWidth() * scale);
+	        scaleBitmap = Bitmap.createScaledBitmap(source, newSize, mSize, true);
+	    } else {
+	        scale = (float) mSize / source.getWidth();
+	        newSize = Math.round(source.getHeight() * scale);
+	        scaleBitmap = Bitmap.createScaledBitmap(source, mSize, newSize, true);
+	    }
 
+	    if (scaleBitmap != source) {
+	           source.recycle();
+	    }
+
+	    return scaledBitmap
+	}*/
+	
 	@Override
 	public int getCount() {
 		return data.size();
@@ -152,6 +190,15 @@ public class GalleryAdapter extends BaseAdapter {
 
 			imageLoader.displayImage("file://" + data.get(position).sdcardPath,
 					holder.imgQueue, new SimpleImageLoadingListener() {
+						@Override
+						public void onLoadingComplete(String imageUri,
+								View view, Bitmap loadedImage) {
+							// TODO Auto-generated method stub
+							holder.imgQueue.setImageBitmap(keepAspectHeight(loadedImage, album_pic_height));
+						    
+							super.onLoadingComplete(imageUri, view, loadedImage);
+						}
+
 						@Override
 						public void onLoadingStarted(String imageUri, View view) {
 							holder.imgQueue

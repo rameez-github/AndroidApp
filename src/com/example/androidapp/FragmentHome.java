@@ -1,5 +1,6 @@
 package com.example.androidapp;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +14,15 @@ import com.developer.adapter.HomeAdapter;
 
 public class FragmentHome extends Fragment implements OnItemClickListener{
 	
+	private MainActivity fromMainActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
+		this.fromMainActivity = (MainActivity) activity;
+		fromMainActivity.changeTopBarIcons(getClass());
+	}
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
