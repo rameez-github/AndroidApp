@@ -16,6 +16,12 @@ import com.developer.model.Message;
 import com.developer.utils.DataKeeper;
 import com.developer.utils.SafeJSONArray;
 import com.developer.utils.SafeJSONObject;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,9 +37,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -54,6 +66,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -61,8 +75,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-public class FragmentChatDetails extends Fragment implements KeyClickListener {
+public class FragmentChatDetails extends Fragment implements KeyClickListener, LocationListener {
 	
 
 	private static HashMap<String, Integer> emoticons_map;
@@ -84,12 +99,17 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 	private View popUpView;
 	private ImageLoader imageLoader;
 	private MainActivity fromMainActivity;
+	private SupportMapFragment mMapFragment;
+	protected GoogleMap mMap;
+	private LocationManager locManager;
+	private ToggleButton toggle_drawer;
 
 	@Override
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		this.fromMainActivity = (MainActivity) activity;
+		fromMainActivity.mLayout.canOpen = false;
 		fromMainActivity.changeTopBarIcons(getClass());
 		fromMainActivity.findViewById(R.id.album_button).setOnClickListener(new OnClickListener (){
 
@@ -103,6 +123,14 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 			}
 			
 		});
+		toggle_drawer = (ToggleButton)fromMainActivity.findViewById(R.id.toggle_drawer_layout);
+	}
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		fromMainActivity.mLayout.canOpen = true;
 	}
 
 	@Override
@@ -117,7 +145,42 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		  
 		text = (EditText) view.findViewById(R.id.text);
 		send = (Button) view.findViewById(R.id.btn_send);
-		
+
+        final DrawerLayout mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerListener(new DrawerListener (){
+
+			@Override
+			public void onDrawerClosed(View arg0) {}
+
+			@Override
+			public void onDrawerOpened(View arg0) {
+				// TODO Auto-generated method stub
+				showMap();}
+
+			@Override
+			public void onDrawerSlide(View arg0, float arg1) {}
+
+			@Override
+			public void onDrawerStateChanged(int arg0) {}
+        	
+        });
+        if (!toggle_drawer.isChecked())
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        
+        toggle_drawer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked){
+					mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+					//mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+				}else {
+					//mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+					mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+				}
+			}
+		});
 		initImageLoader ();
 		
 		messages = new ArrayList<Message>();
@@ -182,6 +245,80 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 		enableFooterView();
 		
 		return view;
+	}
+
+	private void showMap() {
+		FragmentTransaction ft = 
+				getChildFragmentManager().beginTransaction();
+		
+		if (mMapFragment == null) {
+			mMapFragment = new SupportMapFragment(){
+				@Override
+				public void onActivityCreated(Bundle savedInstanceState) {
+					super.onActivityCreated(savedInstanceState);
+					mMap = mMapFragment.getMap();
+					mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+					
+					addMapPins(getLocation());
+				}
+			};
+	        ft.replace(R.id.left_drawer, mMapFragment).commit();
+		}
+	}
+	
+	private void addMapPins(Location location) {
+		
+		if (location == null)
+			return;
+		
+		mMap.clear();
+		
+		LatLng myLatlng = new LatLng (location.getLatitude(), location.getLongitude());
+		mMap.addMarker(new MarkerOptions()
+						.position(myLatlng)
+						.title("")
+						.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_pin)));
+		
+		if (myLatlng != null)
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatlng, 12));
+		
+	}
+	
+
+	private Location getLocation()
+	{
+		Location location = null;
+		try
+		{
+			final long	MIN_JARAK_GPS_UPDATE	= 10;				// meter
+			final long	MIN_WAKTU_GPS_UPDATE	= 1000 * 60 * 1;
+			if (locManager == null)
+				locManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+			boolean isGPSEnable = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			boolean isNetworkEnable = locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if (!isGPSEnable && !isNetworkEnable)
+			{
+			} else {
+				if (isGPSEnable)
+				{
+					locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_WAKTU_GPS_UPDATE, MIN_JARAK_GPS_UPDATE, this);
+					location = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+					
+				}
+				
+				if (isNetworkEnable)
+				{
+					locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_WAKTU_GPS_UPDATE, MIN_JARAK_GPS_UPDATE, this);
+					location = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return location;
 	}
 	
 	private Album getNewAlbumCreated (){
@@ -270,6 +407,7 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
 	 * Checking keyboard height and keyboard visibility
 	 */
 	int previousHeightDiffrence = 0;
+	
 	private void checkKeyboardHeight(final View parentLayout) {
 
 		parentLayout.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -498,6 +636,31 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener {
         };
         
         return (Spannable) Html.fromHtml(text+" <img src ='"+ index +"'/>", imageGetter, null);        
+		
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		addMapPins(location);
+		locManager.removeUpdates(this);
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
 		
 	}
 }
