@@ -42,4 +42,20 @@ public class DataKeeper {
 		return new SafeJSONArray("[]");
 	}
 	
+	public void saveAudio (Context context, String audio){
+		SharedPreferences sharedPreferences = context.getSharedPreferences("audio_preferences", Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putString("album", audio);
+		editor.commit();
+	}
+
+	public SafeJSONArray getAudios (Context context){
+		SharedPreferences sharedPreferences = context.getSharedPreferences("audio_preferences", Context.MODE_PRIVATE);
+		String album = sharedPreferences.getString("album", null);
+		
+		if (album != null)
+			return new SafeJSONArray(album) ;
+		
+		return new SafeJSONArray("[]");
+	}
 }

@@ -29,6 +29,19 @@ public class Message {
 	boolean hasAlbum;
 	
 	Album album;
+
+	/**
+	 * boolean to determine, does message has audio voice or not. 
+	 */
+	boolean hasAudio;
+	
+	Audio audio;
+
+	public Message (Audio mAudio, boolean isMine){
+		this.audio = mAudio;
+		this.hasAudio = true;
+		this.isMine = isMine;
+	}
 	
 	public Message (Album mAlbum, boolean isMine){
 		this.album = mAlbum;
@@ -80,5 +93,13 @@ public class Message {
 	
 	public Album getAlbum (){
 		return album;
+	}
+	
+	public boolean hasAudio (){
+		return hasAudio;
+	}
+	
+	public Audio getAudio (){
+		return audio;
 	}
 }

@@ -132,6 +132,17 @@ public class SafeJSONObject  {
 			e.printStackTrace();
 		}
 	}
+
+	public void putLong(String key, long value) {
+		try {
+			mObject.put(key, value);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/** developer start */
 	public long getLong(String key) {
 		try {

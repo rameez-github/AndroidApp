@@ -1,5 +1,6 @@
 package com.example.androidapp;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,11 @@ import com.developer.adapter.EmoticonsPagerAdapter;
 import com.developer.adapter.MessageAdapter;
 import com.developer.album.ActivityAlbumDetail;
 import com.developer.album.ActivityAlbumList;
+import com.developer.audio.voice.VoiceRecorder;
+import com.developer.audio.voice.ImageViewSwiper;
+import com.developer.audio.voice.ImageViewSwiper.OnImageSwipeListener;
 import com.developer.model.Album;
+import com.developer.model.Audio;
 import com.developer.model.Message;
 import com.developer.utils.DataKeeper;
 import com.developer.utils.SafeJSONArray;
@@ -103,6 +108,12 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 	protected GoogleMap mMap;
 	private LocationManager locManager;
 	private ToggleButton toggle_drawer;
+	
+	
+	//----------------------VOICE RECORDING ATTRIBUTES
+    private ImageViewSwiper	mRecordButton = null;
+    private VoiceRecorder mVoiceRecorder = null;
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -137,7 +148,7 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.fragment_chat_details,
+		final View view = inflater.inflate(R.layout.fragment_chat_details,
 		        container, false);
 
 		emoticons_map = new HashMap<String, Integer>();
@@ -201,6 +212,10 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 		Album album = getNewAlbumCreated();
 		if (album != null)
 			addNewMessage(new Message(getNewAlbumCreated(), false));
+		
+		//addNewMessage(new Message(new Audio(), true));
+		//addNewMessage(new Message(new Audio(), false));
+		loadAudioData ();
 
 		//-------------EMOTICONS CODE--------------  
 		parentLayout = (LinearLayout) view.findViewById(R.id.list_parent);
@@ -244,6 +259,56 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 		checkKeyboardHeight(parentLayout);
 		enableFooterView();
 		
+		
+		// ---------------------- VOICE RECORDING --------------------
+		
+		mVoiceRecorder = new VoiceRecorder (getActivity());
+		mVoiceRecorder.setChatWindowVariable((TextView) view.findViewById(R.id.text_record_timer));
+		mRecordButton = (ImageViewSwiper) view.findViewById(R.id.btn_record);
+		mRecordButton.setImageSwipeListener(new OnImageSwipeListener() {
+			
+			@Override
+			public boolean onSwipeToLeft(float eventX, float eventY) {
+				// TODO Auto-generated method stub
+				//Log.v("swipe-value", "X="+eventX+" , Y="+eventY);
+				Toast.makeText(getActivity(), "Recording cancelled", Toast.LENGTH_SHORT).show();
+				view.findViewById(R.id.text).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.btn_send).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.emoticons_button).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.text_record_timer).setVisibility(View.GONE);
+				view.findViewById(R.id.text_slide_to_cancel).setVisibility(View.GONE);
+				mVoiceRecorder.stopRecording();
+				File file = new File(mVoiceRecorder.getCurrentFileName());
+				file.delete();
+				return true;
+			}
+			
+			@Override
+			public boolean onActionUp() {
+				// TODO Auto-generated method stub
+				mVoiceRecorder.stopRecording();
+				//mVoiceRecorder.play();
+				addNewMessage(new Message(getNewAudioCreated(), true));
+				view.findViewById(R.id.text).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.btn_send).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.emoticons_button).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.text_record_timer).setVisibility(View.GONE);
+				view.findViewById(R.id.text_slide_to_cancel).setVisibility(View.GONE);
+				return true;
+			}
+			
+			@Override
+			public boolean onActionDown() {
+				// TODO Auto-generated method stub
+				mVoiceRecorder.startRecording();
+				view.findViewById(R.id.text).setVisibility(View.GONE);
+				view.findViewById(R.id.btn_send).setVisibility(View.GONE);
+				view.findViewById(R.id.emoticons_button).setVisibility(View.GONE);
+				view.findViewById(R.id.text_record_timer).setVisibility(View.VISIBLE);
+				view.findViewById(R.id.text_slide_to_cancel).setVisibility(View.VISIBLE);
+				return true;
+			}
+		});
 		return view;
 	}
 
@@ -319,6 +384,40 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 			e.printStackTrace();
 		}
 		return location;
+	}
+	
+	private Audio getNewAudioCreated (){
+		Audio audio = new Audio ();
+		audio.path = mVoiceRecorder.getCurrentFileName();
+		audio.audio_length = mVoiceRecorder.getElapsedTime();
+		audio.duration_text = ((TextView) getView().findViewById(R.id.text_record_timer)).getText().toString();
+
+		SafeJSONArray audio_array = DataKeeper.sharedInstance().getAudios(getActivity());
+		
+		// get most recent album created
+		SafeJSONObject audio_item = new SafeJSONObject();
+		audio_item.putString("path", audio.path);
+		audio_item.putLong ("audio_length", audio.audio_length);
+		audio_item.putString("duration_text", audio.duration_text);
+		audio_array.put(audio_item.getObject());
+		
+		DataKeeper.sharedInstance().saveAudio(getActivity(), audio_array.toString());
+		return audio;
+	}
+	
+	private void loadAudioData (){
+		SafeJSONArray audio_array = DataKeeper.sharedInstance().getAudios(getActivity());
+		for (int i=0; i<audio_array.length(); i++){
+			Audio audio = new Audio();
+			audio.path = audio_array.getJSONObject(i).getString("path");
+			audio.audio_length = audio_array.getJSONObject(i).getLong("audio_length");
+			audio.duration_text = audio_array.getJSONObject(i).getString("duration_text");
+
+			Message m = new Message(audio, true);
+			messages.add(m);
+		}
+		adapter.notifyDataSetChanged();
+		chatList.setSelection(messages.size()-1);
 	}
 	
 	private Album getNewAlbumCreated (){
