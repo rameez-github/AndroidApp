@@ -1,5 +1,6 @@
 package com.developer.adapter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -7,13 +8,17 @@ import java.util.concurrent.TimeUnit;
 import com.developer.model.Album;
 import com.developer.model.Audio;
 import com.developer.model.Message;
+import com.developer.model.Video;
 import com.example.androidapp.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,6 +131,11 @@ public class MessageAdapter extends BaseAdapter{
 	    MediaPlayer   	mPlayer = null;
 	    final Handler 	handler = new Handler();
 	    
+	    // video fields
+	    View			video_layout;
+	    TextView		video_length;
+	    ImageView		video_thumbnail;
+	    
 		public void initUIElements(View view, Context context) {
 			
 			// simple message fields
@@ -148,6 +158,12 @@ public class MessageAdapter extends BaseAdapter{
 	        mSeekbar = (SeekBar) view.findViewById(R.id.seekbar);
 			audio_text_duration	= (TextView) view.findViewById(R.id.text_duration);
 			
+
+			// video fields
+			video_layout = view.findViewById(R.id.video_layout);
+			video_thumbnail = (ImageView) view.findViewById(R.id.video_photo);
+	        video_length	= (TextView) view.findViewById(R.id.text_video_length);
+			
 		}
 
 		public void configureValues(Message message, View view, ImageLoader imageLoader) {
@@ -156,7 +172,7 @@ public class MessageAdapter extends BaseAdapter{
 			}
 			// from other contact
 			else {
-				if (message.hasAudio()){
+				if (message.hasAudio() || message.hasVideo()){
 					user_pic.setVisibility(View.GONE);
 				}else {
 					user_pic.setVisibility(View.VISIBLE);
@@ -170,6 +186,7 @@ public class MessageAdapter extends BaseAdapter{
 				album_layout.setVisibility(View.VISIBLE);
 				text_layout.setVisibility(View.GONE);
 				audio_layout.setVisibility(View.GONE);
+				video_layout.setVisibility(View.GONE);
 				Album album = message.getAlbum();
 				this.album_title.setText(album.album_title);
 				this.album_total_pics.setText("Total "+album.total_album_pics);
@@ -186,6 +203,7 @@ public class MessageAdapter extends BaseAdapter{
 				audio_layout.setVisibility(View.VISIBLE);
 				text_layout.setVisibility(View.GONE);
 				album_layout.setVisibility(View.GONE);
+				video_layout.setVisibility(View.GONE);
 				final Audio audio = message.getAudio();
 				audio_text_duration.setText(audio.duration_text);
 				mSeekbar.setOnSeekBarChangeListener(seekBarChanged);
@@ -198,6 +216,19 @@ public class MessageAdapter extends BaseAdapter{
 					}
 					
 				});
+			}else if (message.hasVideo()){
+				video_layout.setVisibility(View.VISIBLE);
+				audio_layout.setVisibility(View.GONE);
+				text_layout.setVisibility(View.GONE);
+				album_layout.setVisibility(View.GONE);
+				Video video = message.getVideo();
+				video_length.setText(video.duration_text);
+				File file = new File(video.path);
+				if (file.exists()) {
+					Bitmap thumb = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(),
+	                	    MediaStore.Images.Thumbnails.MINI_KIND);
+					video_thumbnail.setImageBitmap(thumb);	
+				}
 			}
 			else {
 				text_layout.setVisibility(View.VISIBLE);

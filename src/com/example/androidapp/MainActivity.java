@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import com.developer.adapter.MenuAdapter;
 import com.developer.adapter.MyInfoWindowAdapter;
-import com.developer.album.ActivityAlbumList;
 import com.developer.model.EventInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -192,18 +190,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		if (class1 == FragmentChatDetails.class){
 			findViewById(R.id.map_button).setVisibility(View.GONE);
 			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.video_button).setVisibility(View.VISIBLE);
 			findViewById(R.id.album_button).setVisibility(View.VISIBLE);
 			findViewById(R.id.toggle_drawer_layout).setVisibility(View.VISIBLE);
 		}
 		else if (class1 == FragmentChats.class){
 			findViewById(R.id.map_button).setVisibility(View.GONE);
 			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.video_button).setVisibility(View.GONE);
 			findViewById(R.id.toggle_drawer_layout).setVisibility(View.GONE);
 			findViewById(R.id.album_button).setVisibility(View.GONE);
 		}
 		else {
 			findViewById(R.id.map_button).setVisibility(View.VISIBLE);
 			findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
+			findViewById(R.id.video_button).setVisibility(View.GONE);
 			findViewById(R.id.album_button).setVisibility(View.GONE);
 			findViewById(R.id.toggle_drawer_layout).setVisibility(View.GONE);
 		}

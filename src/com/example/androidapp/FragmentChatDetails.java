@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import com.developer.adapter.EmoticonsGridAdapter.KeyClickListener;
 import com.developer.adapter.EmoticonsPagerAdapter;
 import com.developer.adapter.MessageAdapter;
+import com.developer.album.Action;
 import com.developer.album.ActivityAlbumDetail;
 import com.developer.album.ActivityAlbumList;
 import com.developer.audio.voice.VoiceRecorder;
@@ -18,9 +20,11 @@ import com.developer.audio.voice.ImageViewSwiper.OnImageSwipeListener;
 import com.developer.model.Album;
 import com.developer.model.Audio;
 import com.developer.model.Message;
+import com.developer.model.Video;
 import com.developer.utils.DataKeeper;
 import com.developer.utils.SafeJSONArray;
 import com.developer.utils.SafeJSONObject;
+import com.developer.video.camera.VideoController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -45,7 +49,11 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -57,6 +65,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.Html.ImageGetter;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -115,6 +124,10 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
     private VoiceRecorder mVoiceRecorder = null;
 	
 
+    //----------------------VIDEO RECORDING ATTRIBUTES
+	private VideoController mVideoController;
+    
+    
 	@Override
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
@@ -129,12 +142,23 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 				// TODO Auto-generated method stub
 				startActivityForResult(
 						new Intent (getActivity(), ActivityAlbumList.class),
-						100
+						Action.CREATE_ALBUM_REQUEST_CODE
 						);
 			}
 			
 		});
+
+		fromMainActivity.findViewById(R.id.video_button).setOnClickListener(new OnClickListener (){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mVideoController.startVideo(FragmentChatDetails.this);
+			}
+			
+		});
 		toggle_drawer = (ToggleButton)fromMainActivity.findViewById(R.id.toggle_drawer_layout);
+		mVideoController = new VideoController ();
 	}
 
 	@Override
@@ -453,15 +477,23 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 		imageLoader = ImageLoader.getInstance();
 		imageLoader.init(config);
 	}
-
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
-			Album album = getNewAlbumCreated();
-			if (album != null)
-				addNewMessage(new Message(getNewAlbumCreated(), true));
+		if (resultCode == Activity.RESULT_OK) {
+			if (requestCode == Action.CREATE_ALBUM_REQUEST_CODE) {
+				Album album = getNewAlbumCreated();
+				if (album != null)
+					addNewMessage(new Message(getNewAlbumCreated(), true));
+			}
+			else if (requestCode == VideoController.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE){
+                //Log.d("MyCameraVideo", "path>>"+data.getData().toString());
+				Uri mUri = data.getData();
+        		String duration_text=mVideoController.getFileDuration (mUri);
+				addNewMessage(new Message(new Video(mUri.getPath(), duration_text), true));
+			}
 		}
 	}
 	
@@ -653,6 +685,7 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
 				// TODO Auto-generated method stub
 				if (messages.get(position).hasAlbum()){
 					Intent i = new Intent(getActivity(), ActivityAlbumDetail.class);
@@ -660,7 +693,12 @@ public class FragmentChatDetails extends Fragment implements KeyClickListener, L
 					i.putExtra("index_of_album", messages.get(position).getAlbum().album_index);
 					startActivity(i);
 				}
-					
+				else if (messages.get(position).hasVideo()){
+					String newVideoPath = messages.get(position).getVideo().path;
+					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newVideoPath));
+					intent.setDataAndType(Uri.parse(newVideoPath), "video/mp4");
+					startActivity(intent);
+				}
 			}
 		});
 

@@ -37,6 +37,19 @@ public class Message {
 	
 	Audio audio;
 
+	/**
+	 * boolean to determine, does message has video clip or not. 
+	 */
+	boolean hasVideo;
+	
+	Video video;
+
+	public Message (Video mVideo, boolean isMine){
+		this.video = mVideo;
+		this.hasVideo = true;
+		this.isMine = isMine;
+	}
+	
 	public Message (Audio mAudio, boolean isMine){
 		this.audio = mAudio;
 		this.hasAudio = true;
@@ -101,5 +114,13 @@ public class Message {
 	
 	public Audio getAudio (){
 		return audio;
+	}
+	
+	public boolean hasVideo (){
+		return hasVideo;
+	}
+	
+	public Video getVideo (){
+		return video;
 	}
 }
