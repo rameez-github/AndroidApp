@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+		android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:background="@color/bg_color_left" >
+		
+		<Button
+		    android:id="@+id/btn_step_back"
+		    android:layout_width="wrap_content"
+		    android:layout_height="35dp"
+		    android:layout_centerVertical="true"
+		    android:layout_marginLeft="5dp"
+		    android:textColor="@android:color/white"
+		    android:textStyle="bold"
+		    android:textSize="14dp"
+		    android:text="Back" />
+		
+		<Button
+		    android:id="@+id/btn_done"
+		    android:layout_width="wrap_content"
+		    android:layout_height="35dp"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:layout_marginRight="5dp"
+		    android:textColor="@android:color/white"
+		    android:textStyle="bold"
+		    android:textSize="14dp"
+		    android:text="Done" />
+            
+	</RelativeLayout>
+	
+    <EditText
+        android:id="@+id/edit_search_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_search_contact"
+        android:ems="10" />
+	
+    <TextView
+    	android:id="@+id/heading1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:singleLine="true"
+        android:text="CONTACTS"
+        android:textColor="@color/blue_color"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+	<View
+    	android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="5dp"
+        android:background="@color/blue_color" />
+        
+    <ListView
+		android:id="@+id/list_view"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+		android:scrollbars="vertical"
+		android:drawSelectorOnTop="true"
+		android:cacheColorHint="@android:color/transparent" />
+		
+</LinearLayout>

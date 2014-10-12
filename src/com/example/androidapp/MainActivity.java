@@ -190,11 +190,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 		if (class1 == FragmentChatDetails.class){
 			findViewById(R.id.map_button).setVisibility(View.GONE);
 			findViewById(R.id.refresh_button).setVisibility(View.GONE);
+			findViewById(R.id.btn_create_group).setVisibility(View.GONE);
 			findViewById(R.id.video_button).setVisibility(View.VISIBLE);
 			findViewById(R.id.album_button).setVisibility(View.VISIBLE);
 			findViewById(R.id.toggle_drawer_layout).setVisibility(View.VISIBLE);
 		}
 		else if (class1 == FragmentChats.class){
+			findViewById(R.id.btn_create_group).setVisibility(View.VISIBLE);
 			findViewById(R.id.map_button).setVisibility(View.GONE);
 			findViewById(R.id.refresh_button).setVisibility(View.GONE);
 			findViewById(R.id.video_button).setVisibility(View.GONE);
@@ -207,6 +209,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			findViewById(R.id.video_button).setVisibility(View.GONE);
 			findViewById(R.id.album_button).setVisibility(View.GONE);
 			findViewById(R.id.toggle_drawer_layout).setVisibility(View.GONE);
+			findViewById(R.id.btn_create_group).setVisibility(View.GONE);
 		}
 	}
 	

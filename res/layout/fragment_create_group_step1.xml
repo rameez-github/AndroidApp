@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+		android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:background="@color/bg_color_left" >
+        
+		
+		<Button
+		    android:id="@+id/btn_step_back"
+		    android:layout_width="wrap_content"
+		    android:layout_height="35dp"
+		    android:layout_centerVertical="true"
+		    android:layout_marginLeft="5dp"
+		    android:textColor="@android:color/white"
+		    android:textStyle="bold"
+		    android:textSize="14dp"
+		    android:text="Back" />
+
+		<Button
+		    android:id="@+id/btn_next"
+		    android:layout_width="wrap_content"
+		    android:layout_height="35dp"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:layout_marginRight="5dp"
+		    android:textColor="@android:color/white"
+		    android:textStyle="bold"
+		    android:textSize="14dp"
+		    android:text="Next" />
+            
+	</RelativeLayout>
+	
+    <FrameLayout 
+        android:id="@+id/add_photo"
+        android:layout_width="128px"
+        android:layout_height="128px"
+	    android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal" >
+        
+        <com.developer.custom.CircularImageView android:id="@+id/imgview_circular"
+	        android:layout_width="128px"
+	        android:layout_height="128px"
+	        android:scaleType="fitXY"
+	        android:layout_gravity="center"
+	        android:src="@drawable/square_group_contacts"
+	        android:contentDescription="@string/app_name" />
+	    
+        <ImageView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/take_camera"
+	        android:layout_gravity="right"
+	        android:contentDescription="@string/app_name" />
+	        
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/edit_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_group_name"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:ems="10" />
+
+    <TextView android:id="@+id/textview_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:scrollbars="vertical"
+        android:layout_marginTop="20dp"
+        android:text="You can add upto 100 people to a group" />
+
+</LinearLayout>

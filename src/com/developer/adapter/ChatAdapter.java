@@ -1,11 +1,14 @@
 package com.developer.adapter;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.developer.model.ChatModel;
 import com.example.androidapp.R;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +67,17 @@ public class ChatAdapter extends BaseAdapter{
 		holder.name.setText(list.get(position).name);
 		holder.contact_message.setText(list.get(position).message);
 		holder.time.setText(list.get(position).time);
-		holder.user_pic.setImageResource(list.get(position).imgRes);
+		
+		if (list.get(position).isFilePath){
+			File imgFile = new  File(list.get(position).filePath);
+			if(imgFile.exists()){
+			    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+			    holder.user_pic.setImageBitmap(myBitmap);
+
+			}
+		}else {
+			holder.user_pic.setImageResource(list.get(position).imgRes);
+		}
 		holder.status.setImageResource(list.get(position).statusRes);
 		
 		return view;

@@ -3,6 +3,8 @@
 
     <string name="app_name">AndroidApp</string>
     <string name="action_settings">Settings</string>
+    <string name="hint_search_contact">Search by name or number</string>
+    <string name="hint_group_name">Name the group</string>
 
     <string-array name="menu">
         <item>Home</item>
